@@ -1,4 +1,17 @@
 {
-
+  "__comment": "REMOVE THIS LINE. This Chrome Extention allows you to view the source code of other Chrome Extentions :D",
+  "__comment": "https://chrome.google.com/webstore/detail/chrome-extension-source-v/jifpbeccnghkjeaalbbjmodiffmgedin",
+  "__comment": "JSON has no comments, so this is the closest we can get",
+  "manifest_version": 2,
+  "name": "Reddit Unviewed Posts",
+  "description": "...",
+  "icons": {
+    "16": "images/16.png",
+    "48": "images/48.png",
+    "128": "images/128.png"
+  },
+  "browser_action": {
+        "default_title": "Reddit Unviewed Posts",
+        "default_popup": "popup.html"
+    }
 }
-
