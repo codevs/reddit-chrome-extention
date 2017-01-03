@@ -4,21 +4,37 @@
   "__comment": "JSON has no comments, so this is the closest we can get",
   "__comment": "https://developer.chrome.com/extensions/manifest",
   "__comment": "I do not know what I am doing exactly with this manifest file, read link above and modify it",
+
   "manifest_version": 2,
   "name": "Reddit Unviewed Posts",
+  "version": "0.01a",
+
+  "default_locale": "en",
   "description": "...",
   "icons": {
-    "16": "images/16.png",
-    "48": "images/48.png",
-    "128": "images/128.png"
+    "16": "images/icon16.png",
+    "24": "images/icon24.png",
+    "32": "images/icon32.png"
   },
+
+  "browser_action": {
+    "default_icon": {
+      "16": "images/icon16.png",
+      "24": "images/icon24.png",
+      "32": "images/icon32.png"
+    },
+    "default_title": "Reddit Posts",
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+
   "permissions": [
         "contextMenus",
         "storage",
         "tabs"
-    ],
-  "browser_action": {
-        "default_title": "Reddit Unviewed Posts",
-        "default_popup": "popup.html"
-    }
+    ]
 }
