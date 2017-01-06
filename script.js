@@ -1,10 +1,14 @@
 $(document).ready(function() {
 	chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
 	//chrome.browserAction.setBadgeText({text: "10"});
-	var url = "http://www.reddit.com/r/";
-	
+	const base_url = "http://www.reddit.com/r/";
+	var subreddit = "ClassicOffensive";
+	var sorting = "new";
+
+	var URL = base_url + subreddit + "/" + sorting + ".json";
+
     $.ajax({
-        url: "http://www.reddit.com/r/ClassicOffensive/new.json",
+				url: URL,
         type: 'GET',
         dataType: 'json',
         beforeSend : function(xhr) {
