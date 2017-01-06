@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
 	//chrome.browserAction.setBadgeText({text: "10"});
-	// hello world
 	var url = "http://www.reddit.com/r/";
 	
     $.ajax({
