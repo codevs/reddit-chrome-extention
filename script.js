@@ -4,13 +4,13 @@
 // same between computers
 
 $(document).ready(function() {
-	chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
-	//chrome.browserAction.setBadgeText({text: "10"});
-	const base_url = "http://www.reddit.com/r/";
-	var subreddit = "ClassicOffensive";
-	var sorting = "new";
+  chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
+  //chrome.browserAction.setBadgeText({text: "10"});
+  const base_url = "http://www.reddit.com/r/";
+  var subreddit = "ClassicOffensive";
+  var sorting = "new";
 
-	var URL = base_url + subreddit + "/" + sorting + ".json";
+  var URL = base_url + subreddit + "/" + sorting + ".json";
 
   $.ajax({
     url: URL,
@@ -20,7 +20,7 @@ $(document).ready(function() {
        // xhr.setRequestHeader("Authorization", "Bearer " + token);
     },
     success: function(data, textStatus, jqXHR) {
-	    var count = 0;
+      var count = 0;
       var posts = data.data.children;
       if(jqXHR.status == 200) {
         var number = 1;
