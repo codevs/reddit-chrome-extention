@@ -4,7 +4,7 @@ $(document).ready(function() {
 	var url = "http://www.reddit.com/r/";
 	
     $.ajax({
-        url: "http://www.reddit.com/r/GlobalOffensive/new.json",
+        url: "http://www.reddit.com/r/funny/new.json",
         type: 'GET',
         dataType: 'json',
         beforeSend : function(xhr) {
