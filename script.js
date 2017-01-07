@@ -14,15 +14,30 @@ $(document).ready(function() {
 
     $("#subreddit").keypress(function(e){
         if(e.which == 13){
-            var item = "<li class='font'>" + $("#subreddit").val() + "</li>";
-            $(item).appendTo("#subredditList");
-            $("#subreddit").val("");
+            $.ajax({
+                url: base_url + $("#subreddit").val() + "/" + sorting + ".json",
+                type: 'GET',
+                dataType: 'json',
+                beforeSend: function(xhr){
+
+                },
+                success: function(data, textStatus, jqXHR){
+                    if(jqXHR.status === 200){
+                        var item = "<li class='font'>" + $("#subreddit").val() + "</li>";
+                        $(item).appendTo("#subredditList");
+                        subreddit = $("#subreddit").val();
+                        $("#subreddit").val("");
+                    }
+                },
+                error: function(data, textStatus, jqXHR){
+                    $("#subreddit").val("");
+                }
+            });
         }
     });
 
     function checkForNewPosts(){
         sortingChanged();
-        inputChanged();
         var URL = base_url + subreddit + "/" + sorting + ".json";
 
         $.ajax({
@@ -66,21 +81,6 @@ $(document).ready(function() {
             }
         }
         return true;
-    }
-    function inputChanged(){
-        $.ajax({
-            url: base_url + $("#subreddit").val() + "/" + sorting + ".json",
-            type: 'GET',
-            dataType: 'json',
-            beforeSend: function(xhr){
-
-            },
-            success: function(data, textStatus, jqXHR){
-                if(jqXHR.status === 200){
-                    subreddit = $("#subreddit").val();
-                }
-            }
-        });
     }
     //This is temporary for later when we will need to make the extension constantly run and do checks.
     checkForNewPosts();
