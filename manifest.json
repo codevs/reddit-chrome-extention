@@ -1,16 +1,16 @@
 {
-	"name": "MyFirstExtension",
+	"name": "Reddit Checker",
 	"manifest_version": 2,
 	"version": "1.0",
 	"description": "Looks at Reddit stuff",
 	"browser_action": {
 		"default_icon": "icon.png",
-		"default_title": "An MyFirstExtension",
+		"default_title": "Reddit Checker",
 		"default_popup": "popup.html"
 	},
-	"background": {
-		"scripts": ["jquery-3.1.1.min.js","script.js"]
-	},
+  "background": {
+    "page": "background.html"
+  },
 	"permissions": [
 	    "http://reddit.com/*",
 	    "tabs",

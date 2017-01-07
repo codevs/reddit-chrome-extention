@@ -3,7 +3,7 @@
 // look up what it is. It changes the settings of an editor so they are the
 // same between computers
 
-$(document).ready(function() {
+function checkData() {
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
   //chrome.browserAction.setBadgeText({text: "10"});
   const base_url = "http://www.reddit.com/r/";
@@ -40,4 +40,7 @@ $(document).ready(function() {
       chrome.browserAction.setBadgeText({text: "" + count});
     }
   });
-});
+
+}
+
+checkData();
