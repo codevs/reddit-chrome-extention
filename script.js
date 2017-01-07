@@ -10,7 +10,7 @@ $(document).ready(function() {
     var subreddit = "GlobalOffensive";
     var sorting = "hot";
     var titles = [];
-    var count = 0;
+    var count = 1;
 
     $("#subreddit").keypress(function(e){
         if(e.which == 13){
@@ -35,14 +35,12 @@ $(document).ready(function() {
         success: function(data, textStatus, jqXHR) {
           var posts = data.data.children;
           if(jqXHR.status == 200) {
-            var number = 1;
             for(var i = 0; i < posts.length; i++) {
               if(posts[i].data.clicked === false && newTitle("" + posts[i].data.title) === true) {
-                count++;
                 titles.push("" + posts[i].data.title);
                 //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
                 var $item = $("#post").clone();
-                $item.find("#title").text("" + number++ + ") " + posts[i].data.title);
+                $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
                 if(posts[i].data.selftext_html !== null) {
                   $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
                 }
@@ -51,7 +49,7 @@ $(document).ready(function() {
               }
             }
           }
-          chrome.browserAction.setBadgeText({text: "" + count});
+          chrome.browserAction.setBadgeText({text: "" + (count-1)});
         }
         });
         setTimeout(checkForNewPosts, 1000);
