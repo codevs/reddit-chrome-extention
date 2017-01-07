@@ -6,6 +6,12 @@
 $(document).ready(function() {
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
   //chrome.browserAction.setBadgeText({text: "10"});
+
+
+  //This is temporary for later when we will need to make the extension constantly run and do checks.
+  /*window.setInterval(function(){
+  /// call your function here
+  }, 5000);*/
   const base_url = "http://www.reddit.com/r/";
   var subreddit = "ClassicOffensive";
   var sorting = "new";
@@ -33,6 +39,7 @@ $(document).ready(function() {
             if(posts[i].data.selftext_html !== null) {
               $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
             }
+            $item.find("#link").attr("href", "" + posts[i].data.url);
             $item.appendTo("#list");
           }
         }
