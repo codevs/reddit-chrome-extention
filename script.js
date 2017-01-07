@@ -13,6 +13,8 @@ $(document).ready(function() {
     var count = 0;
 
     function checkForNewPosts(){
+        sortingChanged();
+        inputChanged();
         var URL = base_url + subreddit + "/" + sorting + ".json";
 
         $.ajax({
@@ -43,7 +45,13 @@ $(document).ready(function() {
           }
           chrome.browserAction.setBadgeText({text: "" + count});
         }
-      });
+        });
+        setTimeout(checkForNewPosts, 1000);
+        
+    }
+    function sortingChanged(){
+        sorting = $("#sorting").val();
+        console.log("sorting: " + sorting);
     }
     function newTitle(s){
         for(var i = 0; i < titles.length; i++){
@@ -53,6 +61,21 @@ $(document).ready(function() {
         }
         return true;
     }
+    function inputChanged(){
+        $.ajax({
+            url: base_url + $("#subreddit").val() + "/" + sorting + ".json",
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function(xhr){
+
+            },
+            success: function(data, textStatus, jqXHR){
+                if(jqXHR.status === 200){
+                    subreddit = $("#subreddit").val();
+                }
+            }
+        });
+    }
     //This is temporary for later when we will need to make the extension constantly run and do checks.
-    window.setInterval(checkForNewPosts(), 1000);
+    checkForNewPosts();
 });

@@ -6,8 +6,8 @@
 <script src="script.js"></script>
 </head>
 <body>
-	<input type="text" placeholder="subreddit">
-	<select>
+	<input id="subreddit" type="text" placeholder="subreddit" onchange="inputChanged()">
+	<select id="sorting" onchange="sortingChanged()">
 	  <option value="hot" selected>hot</option>
 	  <option value="new">new</option>
 	  <option value="rising">rising</option>
