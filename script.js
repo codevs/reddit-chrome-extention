@@ -30,6 +30,10 @@ $(document).ready(function() {
             //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
             var $item = $("#post").clone();
             $item.find("#title").text("" + number++ + ") " + posts[i].data.title);
+            $item.click(function() {
+              window.open("reddit.com");
+            });
+            //var $win = $item.find("a").attr( "href","reddit.com" + posts[i].data.permalink);
             if(posts[i].data.selftext_html !== null) {
               $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
             }

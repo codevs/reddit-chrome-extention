@@ -9,8 +9,9 @@
 		"default_popup": "popup.html"
 	},
 	"background": {
-		"scripts": ["jquery-3.1.1.min.js","script.js"]
+		"scripts": ["jquery-3.1.1.min.js","script.js", "background.js"]
 	},
+
 	"permissions": [
 	    "http://reddit.com/*",
 	    "tabs",
