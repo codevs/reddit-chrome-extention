@@ -23,7 +23,7 @@ $(document).ready(function() {
                 },
                 success: function(data, textStatus, jqXHR){
                     if(jqXHR.status === 200){
-                        var item = "<li class='font'><a target='_blank' href=" + base_url + $("#subreddit").val()
+                        var item = "<li class='font'><a id='subredditLink' href=" + base_url + $("#subreddit").val()
                             + ">" + $("#subreddit").val() + "</a></li>";
                         $(item).appendTo("#subredditList");
                         subreddit = $("#subreddit").val();
@@ -36,7 +36,6 @@ $(document).ready(function() {
             });
         }
     });
-
     function checkForNewPosts(){
         sortingChanged();
         var URL = base_url + subreddit + "/" + sorting + ".json";
@@ -68,7 +67,7 @@ $(document).ready(function() {
           chrome.browserAction.setBadgeText({text: "" + (count-1)});
         }
         });
-        setTimeout(checkForNewPosts, 1000);
+        //setTimeout(checkForNewPosts, 1000);
         
     }
     function sortingChanged(){
@@ -85,4 +84,9 @@ $(document).ready(function() {
     }
     //This is temporary for later when we will need to make the extension constantly run and do checks.
     checkForNewPosts();
+    $("#subredditList").on("click", ".font", function(e){
+        subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
+        checkForNewPosts();
+
+    });
 });

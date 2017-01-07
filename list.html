@@ -10,14 +10,15 @@
 			if(e.which == 13){
 				var item = "<li class='font'>" + $("#add").val() + "</li>";
 				$(item).appendTo("#list");
-				$("#add").val("");
-				if(count === 5){
+				/*if(count === 5){
 					$("#list li").each(function(li){
 						var texted = $("#temp").text();
 						texted += " " + $(this).text();
 						$("#temp").text(" " + texted);
 					});
-				}
+				}*/
+				$("#temp").text(" " + $("#add").val().indexOf("/r/"));
+				$("#add").val("");
 				count++;
 			}
 		});
