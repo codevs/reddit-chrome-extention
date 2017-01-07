@@ -4,54 +4,55 @@
 // same between computers
 
 $(document).ready(function() {
-  chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
-  //chrome.browserAction.setBadgeText({text: "10"});
+    chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
+    //chrome.browserAction.setBadgeText({text: "10"});
+    const base_url = "http://www.reddit.com/r/";
+    var subreddit = "GlobalOffensive";
+    var sorting = "hot";
+    var titles = [];
+    var count = 0;
 
+    function checkForNewPosts(){
+        var URL = base_url + subreddit + "/" + sorting + ".json";
 
-  //This is temporary for later when we will need to make the extension constantly run and do checks.
-  /*window.setInterval(function(){
-  /// call your function here
-  }, 5000);*/
-  const base_url = "http://www.reddit.com/r/";
-  var subreddit = "ClassicOffensive";
-  var sorting = "new";
-
-  var URL = base_url + subreddit + "/" + sorting + ".json";
-
-  $.ajax({
-    url: URL,
-    type: 'GET',
-    dataType: 'json',
-    beforeSend : function(xhr) {
-       // xhr.setRequestHeader("Authorization", "Bearer " + token);
-    },
-    success: function(data, textStatus, jqXHR) {
-      var count = 0;
-      var posts = data.data.children;
-      if(jqXHR.status == 200) {
-        var number = 1;
-        for(var i = 0; i < posts.length; i++) {
-          if(posts[i].data.clicked === false) {
-            count++;
-            //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
-            var $item = $("#post").clone();
-            $item.find("#title").text("" + number++ + ") " + posts[i].data.title);
-            if(posts[i].data.selftext_html !== null) {
-              $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
+        $.ajax({
+        url: URL,
+        type: 'GET',
+        dataType: 'json',
+        beforeSend : function(xhr) {
+           // xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        success: function(data, textStatus, jqXHR) {
+          var posts = data.data.children;
+          if(jqXHR.status == 200) {
+            var number = 1;
+            for(var i = 0; i < posts.length; i++) {
+              if(posts[i].data.clicked === false && newTitle("" + posts[i].data.title) === true) {
+                count++;
+                titles.push("" + posts[i].data.title);
+                //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
+                var $item = $("#post").clone();
+                $item.find("#title").text("" + number++ + ") " + posts[i].data.title);
+                if(posts[i].data.selftext_html !== null) {
+                  $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
+                }
+                $item.find("#link").attr("href", "" + posts[i].data.url);
+                $item.appendTo("#list");
+              }
             }
-            $item.find("#link").attr("href", "" + posts[i].data.url);
-            $item.appendTo("#list");
           }
+          chrome.browserAction.setBadgeText({text: "" + count});
         }
-      }
-      chrome.browserAction.setBadgeText({text: "" + count});
+      });
     }
-  });
-   /* $("#link").click(function() {
-        chrome.browserAction.onClicked.addListener(function() {
-            chrome.tabs.create({'url': chrome.extension.getURL('' + $(this).attr("href"))}, function(tab) {
-                // Tab opened.
-            });
-        });
-    });*/
+    function newTitle(s){
+        for(var i = 0; i < titles.length; i++){
+            if(titles[i] === s){
+                return false;
+            }
+        }
+        return true;
+    }
+    //This is temporary for later when we will need to make the extension constantly run and do checks.
+    window.setInterval(checkForNewPosts(), 1000);
 });
