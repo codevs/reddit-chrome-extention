@@ -24,7 +24,6 @@ $(document).ready(function() {
                 success: function(data, textStatus, jqXHR){
                     if(jqXHR.status === 200){
                         if(subredditExists() === false){
-                            alert("in Here");
                             var item = "<li class='font'><a id='subredditLink' href=" + base_url + $("#subreddit").val()
                                 + ">" + $("#subreddit").val() + "</a></li>";
                             $(item).appendTo("#subredditList");
@@ -41,11 +40,14 @@ $(document).ready(function() {
             });
         }
     });
+    function emptyList(){
+        $("#list li:not(:first)").remove();
+        count = 1;
+    }
     function subredditExists(){
         var r = false;
         $("#subredditList li").each(function(e){
             if($(this).text() === $("#subreddit").val()){
-                alert("yes");
                 return r = true;
             }
         });
@@ -102,6 +104,7 @@ $(document).ready(function() {
     checkForNewPosts();
     $("#subredditList").on("click", ".font", function(e){
         subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
+        emptyList();
         checkForNewPosts();
 
     });
