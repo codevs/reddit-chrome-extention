@@ -31,7 +31,10 @@ $(document).ready(function() {
             var $item = $("#post").clone();
             $item.find("#title").text("" + number++ + ") " + posts[i].data.title);
             $item.click(function() {
-              window.open("reddit.com");
+              //window.open("reddit.com");
+              chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {url: "reddit.com"}, null);
+              });
             });
             //var $win = $item.find("a").attr( "href","reddit.com" + posts[i].data.permalink);
             if(posts[i].data.selftext_html !== null) {
