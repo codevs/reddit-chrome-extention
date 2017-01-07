@@ -47,4 +47,11 @@ $(document).ready(function() {
       chrome.browserAction.setBadgeText({text: "" + count});
     }
   });
+   /* $("#link").click(function() {
+        chrome.browserAction.onClicked.addListener(function() {
+            chrome.tabs.create({'url': chrome.extension.getURL('' + $(this).attr("href"))}, function(tab) {
+                // Tab opened.
+            });
+        });
+    });*/
 });
