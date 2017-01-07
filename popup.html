@@ -6,14 +6,17 @@
 <script src="script.js"></script>
 </head>
 <body>
-	<input id="subreddit" type="text" placeholder="subreddit" onchange="inputChanged()">
-	<select id="sorting" onchange="sortingChanged()">
+	<input id="subreddit" type="text" placeholder="subreddit">
+	<select id="sorting">
 	  <option value="hot" selected>hot</option>
 	  <option value="new">new</option>
 	  <option value="rising">rising</option>
 	  <option value="controversial">controversial</option>
 	  <option value="top">top</option>
 	</select>
+	<ul id="subredditList" class="font">
+
+	</ul>
 	<div id="list">
 		<div id="post">
 			<a id="link" href="" target="_blank">

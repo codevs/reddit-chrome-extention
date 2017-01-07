@@ -12,6 +12,14 @@ $(document).ready(function() {
     var titles = [];
     var count = 0;
 
+    $("#subreddit").keypress(function(e){
+        if(e.which == 13){
+            var item = "<li class='font'>" + $("#subreddit").val() + "</li>";
+            $(item).appendTo("#subredditList");
+            $("#subreddit").val("");
+        }
+    });
+
     function checkForNewPosts(){
         sortingChanged();
         inputChanged();
