@@ -23,7 +23,8 @@ $(document).ready(function() {
                 },
                 success: function(data, textStatus, jqXHR){
                     if(jqXHR.status === 200){
-                        var item = "<li class='font'>" + $("#subreddit").val() + "</li>";
+                        var item = "<li class='font'><a target='_blank' href=" + base_url + $("#subreddit").val()
+                            + ">" + $("#subreddit").val() + "</a></li>";
                         $(item).appendTo("#subredditList");
                         subreddit = $("#subreddit").val();
                         $("#subreddit").val("");
