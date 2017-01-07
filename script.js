@@ -23,11 +23,16 @@ $(document).ready(function() {
                 },
                 success: function(data, textStatus, jqXHR){
                     if(jqXHR.status === 200){
-                        var item = "<li class='font'><a id='subredditLink' href=" + base_url + $("#subreddit").val()
-                            + ">" + $("#subreddit").val() + "</a></li>";
-                        $(item).appendTo("#subredditList");
-                        subreddit = $("#subreddit").val();
-                        $("#subreddit").val("");
+                        if(subredditExists() === false){
+                            alert("in Here");
+                            var item = "<li class='font'><a id='subredditLink' href=" + base_url + $("#subreddit").val()
+                                + ">" + $("#subreddit").val() + "</a></li>";
+                            $(item).appendTo("#subredditList");
+                            subreddit = $("#subreddit").val();
+                            $("#subreddit").val("");
+                        }else{
+
+                        }
                     }
                 },
                 error: function(data, textStatus, jqXHR){
@@ -36,6 +41,17 @@ $(document).ready(function() {
             });
         }
     });
+    function subredditExists(){
+        var r = false;
+        $("#subredditList li").each(function(e){
+            if($(this).text() === $("#subreddit").val()){
+                alert("yes");
+                return r = true;
+            }
+        });
+        return r;
+
+    }
     function checkForNewPosts(){
         sortingChanged();
         var URL = base_url + subreddit + "/" + sorting + ".json";
