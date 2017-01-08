@@ -6,17 +6,20 @@
 <script src="script.js"></script>
 </head>
 <body>
-	<input type="text" placeholder="subreddit">
-	<select>
+	<input id="subreddit" type="text" placeholder="subreddit">
+	<select id="sorting">
 	  <option value="hot" selected>hot</option>
 	  <option value="new">new</option>
 	  <option value="rising">rising</option>
 	  <option value="controversial">controversial</option>
 	  <option value="top">top</option>
 	</select>
-	<div id="list">
-		<div id="post">
-			<a href="">
+	<ul id="subredditList" class="font">
+
+	</ul>
+	<ul id="list">
+		<li id="post">
+			<a id="link" href="" target="_blank">
 				<div id="title">
 					
 				</div>
@@ -24,7 +27,7 @@
 						
 				</div>
 			</a>	
-		</div>
-	</div>	
+		</li>
+	</ul>	
 </body>
 </html>
