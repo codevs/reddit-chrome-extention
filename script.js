@@ -39,6 +39,8 @@ $(document).ready(function() {
   });
   $("#sorting").change(function(){
       sorting = $("#sorting option:selected").text();
+      emptyList();
+      checkForNewPosts();
   });
   function emptyList(){
       $("#list li:not(:first)").remove();
@@ -98,7 +100,6 @@ $(document).ready(function() {
   checkForNewPosts();
   $("#subredditList").on("click", ".font", function(e){
       subreddit = $(this).text();
-      alert(subreddit);
       emptyList();
       checkForNewPosts();
 
