@@ -28,9 +28,20 @@ input{
 	position: relative;
 	display: inline-block;
 	width: 245px;
+	border: none;
+	border-bottom: 1px solid gray;
 }
 select{
 	position: relative;
 	float:right;
 	width: 245px;
+}
+.font{
+	font-size: 24px;
+	font-family: Courier;
+}
+input:focus{
+	outline-width: 0;
+	box-shadow: none;
+	text-decoration: none;
 }
