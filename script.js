@@ -44,12 +44,19 @@ $(document).ready(function() {
   });
   $("#menu").click(function(){
     this.classList.toggle("change");
+    if($("#menuBackground").height() === 110){
+      $("#subreddit, #subredditList, #sorting").fadeOut(1000);
+      $("#menuBackground").animate({height: 43}, 1000);
+    }else{
+      $("#menuBackground").animate({height: 110}, 1000);
+      $("#subreddit, #subredditList, #sorting").fadeIn(1000);
+    }
   });
   function clearInput(){
     $("#subreddit").val("");
   }
   function addSubredditToList(s){
-    var item = "<li class='font'>" + s.toUpperCase() + "</li>";
+    var item = "<option class='font' value='" + s + "'>" + s + "</option>";
     $(item).appendTo("#subredditList");
     subreddit = s;
     clearInput();
