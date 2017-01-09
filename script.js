@@ -4,7 +4,6 @@
 // same between computers
 
 $(document).ready(function() {
-<<<<<<< HEAD
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
   //chrome.browserAction.setBadgeText({text: "10"});
   const base_url = "http://www.reddit.com/r/";
@@ -40,7 +39,6 @@ $(document).ready(function() {
             //var $win = $item.find("a").attr( "href","reddit.com" + posts[i].data.permalink);
             if(posts[i].data.selftext_html !== null) {
               $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
-=======
     chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
     //chrome.browserAction.setBadgeText({text: "10"});
     const base_url = "http://www.reddit.com/r/";
@@ -117,7 +115,6 @@ $(document).ready(function() {
                 $item.find("#link").attr("href", "" + posts[i].data.url);
                 $item.appendTo("#list");
               }
->>>>>>> refs/remotes/origin/master
             }
           }
           chrome.browserAction.setBadgeText({text: "" + (count-1)});
@@ -126,9 +123,7 @@ $(document).ready(function() {
         //setTimeout(checkForNewPosts, 1000);
         
     }
-<<<<<<< HEAD
   });
-=======
     function sortingChanged(){
         sorting = $("#sorting").val();
         console.log("sorting: " + sorting);
@@ -149,5 +144,4 @@ $(document).ready(function() {
         checkForNewPosts();
 
     });
->>>>>>> refs/remotes/origin/master
 });
