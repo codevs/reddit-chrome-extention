@@ -42,14 +42,19 @@ $(document).ready(function() {
       emptyList();
       checkForNewPosts();
   });
+  $("#subredditList").change(function(){
+      subreddit = $("#subredditList option:selected").text();
+      emptyList();
+      checkForNewPosts();
+  });
   $("#menu").click(function(){
     this.classList.toggle("change");
     if($("#menuBackground").height() === 110){
-      $("#subreddit, #subredditList, #sorting").fadeOut(1000);
-      $("#menuBackground").animate({height: 43}, 1000);
+      $("input, select").animate({opacity: 0}, .4);
+      $("#menuBackground").animate({height: 43}, .4);
     }else{
-      $("#menuBackground").animate({height: 110}, 1000);
-      $("#subreddit, #subredditList, #sorting").fadeIn(1000);
+      $("#menuBackground").animate({height: 110}, .4);
+      $("input, select").animate({opacity: 1}, .4);
     }
   });
   function clearInput(){
