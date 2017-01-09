@@ -42,11 +42,14 @@ $(document).ready(function() {
       emptyList();
       checkForNewPosts();
   });
+  $("#menu").click(function(){
+    this.classList.toggle("change");
+  });
   function clearInput(){
     $("#subreddit").val("");
   }
   function addSubredditToList(s){
-    var item = "<li class='font'>" + s + "</li>";
+    var item = "<li class='font'>" + s.toUpperCase() + "</li>";
     $(item).appendTo("#subredditList");
     subreddit = s;
     clearInput();
