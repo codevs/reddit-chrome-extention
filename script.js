@@ -5,12 +5,17 @@
 
 $(document).ready(function() {
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
-  //chrome.browserAction.setBadgeText({text: "10"});
   const base_url = "http://www.reddit.com/r/";
   var subreddit = "GlobalOffensive";
   var sorting = "hot";
-  var titles = [];
+  var subreddits = [];
   var count = 1;
+  $("#subredditList").on("click", ".font", function(e){
+      subreddit = $(this).text();
+      emptyList();
+      checkForNewPosts();
+
+  });
   $("#subreddit").keypress(function(e){
       if(e.which == 13){
           $.ajax({
@@ -22,17 +27,12 @@ $(document).ready(function() {
               success: function(data, textStatus, jqXHR){
                   if(jqXHR.status === 200){
                       if(subredditExists() === false){
-                          var item = "<li class='font'><a id='subredditLink' href=" + base_url + $("#subreddit").val()
-                              + ">" + $("#subreddit").val() + "</a></li>";
-                          $(item).appendTo("#subredditList");
-                          subreddit = $("#subreddit").val();
-                          $("#subreddit").val("");
-                      }else{
+                        addSubredditToList($("#subreddit").val());
                       }
                   }
               },
               error: function(data, textStatus, jqXHR){
-                  $("#subreddit").val("");
+                  clearInput();
               }
           });
       }
@@ -42,6 +42,24 @@ $(document).ready(function() {
       emptyList();
       checkForNewPosts();
   });
+  function clearInput(){
+    $("#subreddit").val("");
+  }
+  function addSubredditToList(s){
+    var item = "<li class='font'>" + s + "</li>";
+    $(item).appendTo("#subredditList");
+    subreddit = s;
+    clearInput();
+    subreddits.push(s);
+    chrome.storage.sync.set({'subreddits': subreddits});
+  }
+  function syncSubreddits(){
+    chrome.storage.sync.get('subreddits', function(data){
+      for(var i = 0; i < data.subreddits.length; i++){
+      addSubredditToList(data.subreddits[i]);
+    }
+    }); 
+  }
   function emptyList(){
       $("#list li:not(:first)").remove();
       titles = [];
@@ -69,8 +87,7 @@ $(document).ready(function() {
         var posts = data.data.children;
         if(jqXHR.status == 200) {
           for(var i = 0; i < posts.length; i++) {
-            if(posts[i].data.clicked === false && newTitle("" + posts[i].data.title) === true) {
-              titles.push("" + posts[i].data.title);
+            if(posts[i].data.clicked === false) {
               //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
               var $item = $("#post").clone();
               $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
@@ -88,20 +105,6 @@ $(document).ready(function() {
       //setTimeout(checkForNewPosts, 1000);
 
   }
-  function newTitle(s){
-      for(var i = 0; i < titles.length; i++){
-          if(titles[i] === s){
-              return false;
-          }
-      }
-      return true;
-  }
-  //This is temporary for later when we will need to make the extension constantly run and do checks.
+  syncSubreddits();
   checkForNewPosts();
-  $("#subredditList").on("click", ".font", function(e){
-      subreddit = $(this).text();
-      emptyList();
-      checkForNewPosts();
-
-  });
 });

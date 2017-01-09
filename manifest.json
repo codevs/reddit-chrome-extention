@@ -12,8 +12,9 @@
     "page": "background.html"
   },
 	"permissions": [
-	    "http://reddit.com/*",
-	    "tabs",
-	    "https://ajax.googleapis.com/"
+		"storage",
+    "http://reddit.com/*",
+    "tabs",
+    "https://ajax.googleapis.com/"
 	]
 }
