@@ -39,6 +39,10 @@ input{
 select{
 	top: -13px;
 }
+select option:hover {
+  color: #000; 
+  background-color: none;
+}
 .font{
 	font-size: 24px;
 }
