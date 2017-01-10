@@ -5,13 +5,16 @@
 
 $(document).ready(function() {
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
-  //chrome.browserAction.setBadgeText({text: "10"});
   const base_url = "http://www.reddit.com/r/";
   var subreddit = "GlobalOffensive";
   var sorting = "hot";
-  var titles = [];
+  var subreddits = [];
   var count = 1;
-
+  $("#subredditList").on("click", ".font", function(e){
+    subreddit = $(this).text();
+    emptyList();
+    checkForNewPosts();
+  });
   $("#subreddit").keypress(function(e){
     if(e.which == 13){
       $.ajax({
@@ -19,30 +22,63 @@ $(document).ready(function() {
         type: 'GET',
         dataType: 'json',
         beforeSend: function(xhr){
-
         },
         success: function(data, textStatus, jqXHR){
           if(jqXHR.status === 200){
-            if(subredditExists() === false) {
-              var item = "<li class='font'><a id='subredditLink' href=" + base_url + $("#subreddit").val()
-                  + ">" + $("#subreddit").val() + "</a></li>";
-              $(item).appendTo("#subredditList");
-              subreddit = $("#subreddit").val();
-              $("#subreddit").val("");
-            } else {
-
+            if(subredditExists() === false){
+              addSubredditToList($("#subreddit").val());
             }
           }
         },
         error: function(data, textStatus, jqXHR){
-          $("#subreddit").val("");
+          clearInput();
         }
       });
     }
   });
+  $("#sorting").change(function(){
+    sorting = $("#sorting option:selected").text();
+    emptyList();
+    checkForNewPosts();
+  });
+  $("#subredditList").change(function(){
+    subreddit = $("#subredditList option:selected").text();
+    emptyList();
+    checkForNewPosts();
+  });
+  $("#menu").click(function(){
+    this.classList.toggle("change");
+    if($("#menuBackground").height() === 110){
+      $("input, select").animate({opacity: 0}, .4);
+      $("#menuBackground").animate({height: 43}, .4);
+    }else{
+      $("#menuBackground").animate({height: 110}, .4);
+      $("input, select").animate({opacity: 1}, .4);
+    }
+  });
+
+  function clearInput(){
+    $("#subreddit").val("");
+  }
+  function addSubredditToList(s){
+    var item = "<option class='font' value='" + s + "'>" + s + "</option>";
+    $(item).appendTo("#subredditList");
+    subreddit = s;
+    clearInput();
+    subreddits.push(s);
+    chrome.storage.sync.set({'subreddits': subreddits});
+  }
+  function syncSubreddits(){
+    chrome.storage.sync.get('subreddits', function(data){
+      for(var i = 0; i < data.subreddits.length; i++){
+      addSubredditToList(data.subreddits[i]);
+    }
+    });
+  }
 
   function emptyList(){
     $("#list li:not(:first)").remove();
+    titles = [];
     count = 1;
   }
 
@@ -58,40 +94,34 @@ $(document).ready(function() {
 
   function checkForNewPosts(){
     authorize();
-    sortingChanged();
     var URL = base_url + subreddit + "/" + sorting + ".json";
-
-    $.ajax({
-    url: URL,
-    type: 'GET',
-    dataType: 'json',
-    beforeSend : function(xhr) {
-       // xhr.setRequestHeader("Authorization", "Bearer " + token);
-    },
-    success: function(data, textStatus, jqXHR) {
-      var posts = data.data.children;
-      if(jqXHR.status == 200) {
-        for(var i = 0; i < posts.length; i++) {
-          if(posts[i].data.clicked === false && newTitle("" + posts[i].data.title) === true) {
-            titles.push("" + posts[i].data.title);
-            //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
-            var $item = $("#post").clone();
-            $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
-
-            if(posts[i].data.selftext_html !== null) {
-              $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
+      $.ajax({
+      url: URL,
+      type: 'GET',
+      dataType: 'json',
+      beforeSend : function(xhr) {
+         // xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: function(data, textStatus, jqXHR) {
+        var posts = data.data.children;
+        if(jqXHR.status == 200) {
+          for(var i = 0; i < posts.length; i++) {
+            if(posts[i].data.clicked === false) {
+              //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
+              var $item = $("#post").clone();
+              $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
+              if(posts[i].data.selftext_html !== null) {
+                $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
+              }
+              $item.find("#link").attr("href", "" + posts[i].data.url);
+              $item.appendTo("#list");
             }
-
-            $item.find("#link").attr("href", "" + posts[i].data.url);
-            $item.appendTo("#list");
           }
         }
+        chrome.browserAction.setBadgeText({text: "" + (count-1)});
       }
-      chrome.browserAction.setBadgeText({text: "" + (count-1)});
-    }
     });
     //setTimeout(checkForNewPosts, 1000);
-
   }
 
   function sortingChanged() {
@@ -137,6 +167,7 @@ $(document).ready(function() {
         // and data of : grant_type=authorization_code&code=CODE&redirect_uri=URI
       });
   }
+
   //This is temporary for later when we will need to make the extension constantly run and do checks.
   checkForNewPosts();
   $("#subredditList").on("click", ".font", function(e) {

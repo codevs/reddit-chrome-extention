@@ -2,20 +2,29 @@
 	left: 0;
 	padding: 0;
 	margin: 0;
+	color: white;
+}
+html {
+    overflow-y:scroll;
 }
 body{
-	background-color: #dddddd;		
-	width: 100%;
+	border: 2px solid #FF9900;
+	background-color: #FF9900;	
 }
 div{
-	font-size: 12px;
+	font-size: 16px;
 	color: black;
-	width: 500px;
 }
 #post{
-	background-color: #cccccc;
-	margin: 1px 0 0 0;
-	border-bottom: 2px solid #aaaaaa;
+	margin: 2px 0 0 0;
+	background-color: rgba(193, 49, 0, .5);
+	border-left: 5px solid #C13100;
+	border-right: 5px solid #C13100;
+	width: 350px;
+	font-weight: bold;
+}
+ul {
+	list-style-type: none;
 }
 a{
 	text-decoration: none;
@@ -25,23 +34,82 @@ a:focus{
 	color: inherit;
 }
 input{
-	position: relative;
-	display: inline-block;
-	width: 245px;
-	border: none;
-	border-bottom: 1px solid gray;
+
 }
 select{
-	position: relative;
-	float:right;
-	width: 245px;
+	top: -13px;
+}
+select option:hover {
+  color: #000; 
+  background-color: none;
 }
 .font{
 	font-size: 24px;
-	font-family: Courier;
 }
-input:focus{
+input:focus, select:focus, option{
 	outline-width: 0;
 	box-shadow: none;
 	text-decoration: none;
+	background-color: rgba(193, 49, 0, .5);
+}
+option{
+
+}
+.container {
+		margin: 5px;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    width: 35px;
+}
+
+.bar1, .bar2, .bar3 {
+    width: 35px;
+    height: 5px;
+    background-color: #333;
+    margin: 0px 0 6px 0;
+    transition: 0.4s;
+}
+
+.change .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px) ;
+    transform: rotate(-45deg) translate(-9px, 6px) ;
+}
+
+.change .bar2 {opacity: 0;}
+
+.change .bar3 {
+    -webkit-transform: rotate(45deg) translate(-8px, -8px) ;
+    transform: rotate(45deg) translate(-9px, -6px) ;
+}
+#menuBackground{
+	background-color: inherit;
+	width: 350px;
+	height: 43px;
+}
+.menuElements {
+	position: relative;
+	border: none;
+	float: right;
+	margin: 5px 5px 0 0;
+	opacity: 0;
+	background-color: rgba(193, 49, 0, .5);
+	border-left: 5px solid #C13100;
+	border-right: 5px solid #C13100;
+	width: 200px;
+	height: ;
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    white;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    white;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    white;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    white;
 }
