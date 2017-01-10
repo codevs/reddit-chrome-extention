@@ -40,10 +40,12 @@ $(document).ready(function() {
       });
     }
   });
+
   function emptyList(){
     $("#list li:not(:first)").remove();
     count = 1;
   }
+
   function subredditExists(){
     var r = false;
     $("#subredditList li").each(function(e){
@@ -53,7 +55,9 @@ $(document).ready(function() {
     });
     return r;
   }
+
   function checkForNewPosts(){
+    authorize();
     sortingChanged();
     var URL = base_url + subreddit + "/" + sorting + ".json";
 
@@ -89,10 +93,12 @@ $(document).ready(function() {
     //setTimeout(checkForNewPosts, 1000);
 
   }
+
   function sortingChanged() {
     sorting = $("#sorting").val();
     console.log("sorting: " + sorting);
   }
+
   function newTitle(s) {
     for(var i = 0; i < titles.length; i++){
       if(titles[i] === s){
@@ -101,12 +107,41 @@ $(document).ready(function() {
     }
     return true;
   }
+
+  function authorize() {
+    const baseURL = "https://www.reddit.com/api/v1/authorize"
+    const clientID = "CAkDeHjpPz8ZWw";
+    const type = "code";
+    const rURI = "https://efpldkoaoakkglfgdhhfbbhckchoeeaf.chromiumapp.org/reddit";
+    const duration = "permanent";
+    const state = "1234";
+    const scope = "identity,history";
+
+    let URL = baseURL + "?client_id=" + clientID + "&response_type=" + type
+                + "&state=" + state + "&redirect_uri=" + rURI + "&duration=" + duration
+                + "&scope=" + scope;
+
+
+    console.log("URL:" + URL);
+    chrome.identity.launchWebAuthFlow(
+      {'url': URL, 'interactive': true},
+      function(redirect_url) {
+        console.log("RESPONSE: " + redirect_url);
+        // Read this: https://github.com/reddit/reddit/wiki/OAuth2
+
+        // TODO retrieve code form redirect url, example below
+        // https://efpldkoaoakkglfgdhhfbbhckchoeeaf.chromiumapp.org/reddit?state=1234&code=-RfbB1Pu-74MESMezczJZ4d7jrg
+        // plus check if state matches the state variable on top
+
+        // TODO make POST request tohttps://www.reddit.com/api/v1/access_token
+        // and data of : grant_type=authorization_code&code=CODE&redirect_uri=URI
+      });
+  }
   //This is temporary for later when we will need to make the extension constantly run and do checks.
   checkForNewPosts();
-    $("#subredditList").on("click", ".font", function(e) {
-      subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
-      emptyList();
-      checkForNewPosts();
-
+  $("#subredditList").on("click", ".font", function(e) {
+    subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
+    emptyList();
+    checkForNewPosts();
   });
 });
