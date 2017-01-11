@@ -3,6 +3,15 @@
 // look up what it is. It changes the settings of an editor so they are the
 // same between computers
 
+
+var RedditData = {
+  loggedIn: false,
+  token: "",
+  refresh_token: "",
+  expireDate: 0,
+  uri: ""
+};
+
 $(document).ready(function() {
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
   const base_url = "http://www.reddit.com/r/";
@@ -93,7 +102,6 @@ $(document).ready(function() {
   }
 
   function checkForNewPosts(){
-    authorize();
     var URL = base_url + subreddit + "/" + sorting + ".json";
       $.ajax({
       url: URL,
@@ -138,6 +146,31 @@ $(document).ready(function() {
     return true;
   }
 
+  var data;
+
+  function getToken(code, uri, client) {
+    var data = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + uri;
+
+    $.ajax({
+      url: URL,
+      type: 'POST',
+      data: data,
+      dataType: 'json',
+      beforeSend : function(xhr) {
+        xhr.setRequestHeader ("Authorization", "Basic " + btoa(client + ":" + ""));
+      },
+      success: function(data, textStatus, jqXHR) {
+        RedditData.loggedIn = true;
+        RedditData.token = data.access_token;
+        RedditData.refresh_token = data.refresh_token;
+        RedditData.expireDate = data.expires_in;
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+
+      }
+    });
+  }
+
   function authorize() {
     const baseURL = "https://www.reddit.com/api/v1/authorize"
     const clientID = "CAkDeHjpPz8ZWw";
@@ -162,6 +195,7 @@ $(document).ready(function() {
         // TODO retrieve code form redirect url, example below
         // https://efpldkoaoakkglfgdhhfbbhckchoeeaf.chromiumapp.org/reddit?state=1234&code=-RfbB1Pu-74MESMezczJZ4d7jrg
         // plus check if state matches the state variable on top
+        var g = redirect_url.substring(redirect_url.indexOf("code="));
 
         // TODO make POST request tohttps://www.reddit.com/api/v1/access_token
         // and data of : grant_type=authorization_code&code=CODE&redirect_uri=URI
@@ -170,6 +204,7 @@ $(document).ready(function() {
 
   //This is temporary for later when we will need to make the extension constantly run and do checks.
   checkForNewPosts();
+  authorize();
   $("#subredditList").on("click", ".font", function(e) {
     subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
     emptyList();
