@@ -111,7 +111,7 @@ $(document).ready(function() {
     return r;
   }
 
-  function handleSucess() {
+  function handleSucess(data, jqXHR) {
     var posts = data.data.children;
     if(jqXHR.status == 200) {
       for(var i = 0; i < posts.length; i++) {
@@ -137,7 +137,7 @@ $(document).ready(function() {
       type: 'GET',
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
-        handleSucess();
+        handleSucess(data, jqXHR);
       }
     });
   }
@@ -152,7 +152,7 @@ $(document).ready(function() {
          xhr.setRequestHeader("Authorization", "Bearer " + RedditData.token);
       },
       success: function(data, textStatus, jqXHR) {
-        handleSucess();
+        handleSucess(data, jqXHR);
       }
     });
   }
@@ -208,7 +208,7 @@ $(document).ready(function() {
     const baseURL = "https://www.reddit.com/api/v1/authorize"
     const clientID = "CAkDeHjpPz8ZWw";
     const type = "code";
-    const rURI = "https://efpldkoaoakkglfgdhhfbbhckchoeeaf.chromiumapp.org/reddit";
+    const rURI = "https://ikkbiolpjkhfhhobbdphlicjdbiafpgf.chromiumapp.org/reddit";
     const duration = "permanent";
     const state = "1234";
     const scope = "identity,history";
@@ -224,10 +224,9 @@ $(document).ready(function() {
         // Read this: https://github.com/reddit/reddit/wiki/OAuth2
 
         // TODO: check for errors
-        var g = redirect_url.substring(redirect_url.indexOf("code="));
+        var code = redirect_url.substring(redirect_url.indexOf("code="));
 
-        // TODO make POST request to https://www.reddit.com/api/v1/access_token
-        // and data of : grant_type=authorization_code&code=CODE&redirect_uri=URI
+        getToken(code, rURI, clientID);
       });
   }
 
