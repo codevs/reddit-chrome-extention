@@ -101,35 +101,58 @@ $(document).ready(function() {
     return r;
   }
 
-  function checkForNewPosts(){
+  function handleSucess() {
+    var posts = data.data.children;
+    if(jqXHR.status == 200) {
+      for(var i = 0; i < posts.length; i++) {
+        if(posts[i].data.clicked === false) {
+          //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
+          var $item = $("#post").clone();
+          $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
+          $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
+          if(posts[i].data.selftext_html !== null) {
+          }
+          $item.find("#link").attr("href", "" + posts[i].data.url);
+          $item.appendTo("#list");
+        }
+      }
+    }
+    chrome.browserAction.setBadgeText({text: "" + (count-1)});
+  }
+
+  function checkWithNoAuth() {
     var URL = base_url + subreddit + "/" + sorting + ".json";
-      $.ajax({
+    $.ajax({
+      url: URL,
+      type: 'GET',
+      dataType: 'json',
+      success: function(data, textStatus, jqXHR) {
+        handleSucess();
+      }
+    });
+  }
+
+  function checkWithAuth() {
+    var URL = base_url + subreddit + "/" + sorting + ".json";
+    $.ajax({
       url: URL,
       type: 'GET',
       dataType: 'json',
       beforeSend : function(xhr) {
-         // xhr.setRequestHeader("Authorization", "Bearer " + token);
+         xhr.setRequestHeader("Authorization", "Bearer " + RedditData.token);
       },
       success: function(data, textStatus, jqXHR) {
-        var posts = data.data.children;
-        if(jqXHR.status == 200) {
-          for(var i = 0; i < posts.length; i++) {
-            if(posts[i].data.clicked === false) {
-              //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
-              var $item = $("#post").clone();
-              $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
-              if(posts[i].data.selftext_html !== null) {
-                $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
-              }
-              $item.find("#link").attr("href", "" + posts[i].data.url);
-              $item.appendTo("#list");
-            }
-          }
-        }
-        chrome.browserAction.setBadgeText({text: "" + (count-1)});
+        handleSucess();
       }
     });
-    //setTimeout(checkForNewPosts, 1000);
+  }
+
+  function checkForNewPosts(){
+    if (RedditData.loggedIn) {
+      checkWithAuth();
+    } else {
+      checkWithNoAuth();
+    }
   }
 
   function sortingChanged() {
