@@ -208,7 +208,7 @@ $(document).ready(function() {
     const baseURL = "https://www.reddit.com/api/v1/authorize"
     const clientID = "CAkDeHjpPz8ZWw";
     const type = "code";
-    const rURI = "https://ikkbiolpjkhfhhobbdphlicjdbiafpgf.chromiumapp.org/reddit";
+    const rURI = "https://geaeacgampcjoddamdhmlmamimcknamn.chromiumapp.org/reddit";
     const duration = "permanent";
     const state = "1234";
     const scope = "identity,history";
@@ -224,8 +224,10 @@ $(document).ready(function() {
         // Read this: https://github.com/reddit/reddit/wiki/OAuth2
 
         // TODO: check for errors
+        alert("redirect_url: " + redirect_url);
         var code = redirect_url.substring(redirect_url.indexOf("code="));
 
+        alert("code: " + redirect_url);
         getToken(code, rURI, clientID);
       });
   }
