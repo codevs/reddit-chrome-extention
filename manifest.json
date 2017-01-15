@@ -1,10 +1,10 @@
 {
   "name": "Reddit Checker",
   "manifest_version": 2,
-  "version": "1.0",
+  "version": "1.0.0.2",
   "description": "Looks at Reddit stuff",
 
-  "key": "efpldkoaoakkglfgdhhfbbhckchoeeaf",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7A33kQM4UZ8XgFIJiowWNxIqnGA8UvIxqnqe4rmHYIsOrSiJNuQODt3O+JeaEfAaeeMzfLuSBsI8xW68X1gkDv6PqM2Oe/4Rx7Nd7dr9lHkEbzGDxCZo8iVfXfJLhyjdriEIXzjSsdNs5Hwx/3BNozk9SJbhDWIjU+L3nSbCHdT5HnG5ngQxSzZkx7GdtrU+ti4P3aqXhHGf+h5wSfFhQTmEFhRqLYQKjtFlzERRPJMIRnwxcU02Rq4V77Xz1XuFzEdnyq36xumGx49YMCVWY287j7xZH8cYIiisPJ3j1nQ14GiPpC6K5lIJEU21Gj9moKkTWMYzGnzvTxcwsCmmAQIDAQAB",
 
   "browser_action": {
     "default_icon": "icon.png",

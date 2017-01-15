@@ -3,6 +3,15 @@
 // look up what it is. It changes the settings of an editor so they are the
 // same between computers
 
+
+var RedditData = {
+  loggedIn: false,
+  token: "",
+  refresh_token: "",
+  expireDate: 0,
+  uri: ""
+};
+
 $(document).ready(function() {
   chrome.browserAction.setBadgeBackgroundColor({color: [255,0,0,255]});
   const base_url = "http://www.reddit.com/r/";
@@ -10,12 +19,17 @@ $(document).ready(function() {
   var sorting = "hot";
   var subreddits = [];
   var count = 1;
+
   $("#subredditList").on("click", ".font", function(e){
     subreddit = $(this).text();
     emptyList();
     checkForNewPosts();
   });
+
   $("#subreddit").keypress(function(e){
+    // NOTE: this looks ineffecient, a Reddit API must exist to check if a
+    // subreddit exists
+
     if(e.which == 13){
       $.ajax({
         url: base_url + $("#subreddit").val() + "/" + sorting + ".json",
@@ -36,31 +50,35 @@ $(document).ready(function() {
       });
     }
   });
+
   $("#sorting").change(function(){
     sorting = $("#sorting option:selected").text();
     emptyList();
     checkForNewPosts();
   });
+
   $("#subredditList").change(function(){
     subreddit = $("#subredditList option:selected").text();
     emptyList();
     checkForNewPosts();
   });
+
   $("#menu").click(function(){
     this.classList.toggle("change");
-    if($("#menuBackground").height() === 110){
+    if($("#menuBackground").height() === 110) {
       $("input, select").animate({opacity: 0}, .4);
       $("#menuBackground").animate({height: 43}, .4);
-    }else{
+    } else {
       $("#menuBackground").animate({height: 110}, .4);
       $("input, select").animate({opacity: 1}, .4);
     }
   });
 
-  function clearInput(){
+  function clearInput() {
     $("#subreddit").val("");
   }
-  function addSubredditToList(s){
+
+  function addSubredditToList(s) {
     var item = "<option class='font' value='" + s + "'>" + s + "</option>";
     $(item).appendTo("#subredditList");
     subreddit = s;
@@ -68,11 +86,12 @@ $(document).ready(function() {
     subreddits.push(s);
     chrome.storage.sync.set({'subreddits': subreddits});
   }
-  function syncSubreddits(){
+
+  function syncSubreddits() {
     chrome.storage.sync.get('subreddits', function(data){
-      for(var i = 0; i < data.subreddits.length; i++){
-      addSubredditToList(data.subreddits[i]);
-    }
+      for(var i = 0; i < data.subreddits.length; i++) {
+        addSubredditToList(data.subreddits[i]);
+      }
     });
   }
 
@@ -84,44 +103,66 @@ $(document).ready(function() {
 
   function subredditExists(){
     var r = false;
-    $("#subredditList li").each(function(e){
-      if($(this).text() === $("#subreddit").val()){
+    $("#subredditList li").each(function(e) {
+      if($(this).text() === $("#subreddit").val()) {
         return r = true;
       }
     });
     return r;
   }
 
-  function checkForNewPosts(){
-    authorize();
+  function handleSucess(data, jqXHR) {
+    var posts = data.data.children;
+    if(jqXHR.status == 200) {
+      for(var i = 0; i < posts.length; i++) {
+        if(posts[i].data.clicked === false) {
+          //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
+          var $item = $("#post").clone();
+          $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
+          $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
+          if(posts[i].data.selftext_html !== null) {
+          }
+          $item.find("#link").attr("href", "" + posts[i].data.url);
+          $item.appendTo("#list");
+        }
+      }
+    }
+    chrome.browserAction.setBadgeText({text: "" + (count-1)});
+  }
+
+  function checkWithNoAuth() {
     var URL = base_url + subreddit + "/" + sorting + ".json";
-      $.ajax({
+    $.ajax({
+      url: URL,
+      type: 'GET',
+      dataType: 'json',
+      success: function(data, textStatus, jqXHR) {
+        handleSucess(data, jqXHR);
+      }
+    });
+  }
+
+  function checkWithAuth() {
+    var URL = base_url + subreddit + "/" + sorting + ".json";
+    $.ajax({
       url: URL,
       type: 'GET',
       dataType: 'json',
       beforeSend : function(xhr) {
-         // xhr.setRequestHeader("Authorization", "Bearer " + token);
+         xhr.setRequestHeader("Authorization", "Bearer " + RedditData.token);
       },
       success: function(data, textStatus, jqXHR) {
-        var posts = data.data.children;
-        if(jqXHR.status == 200) {
-          for(var i = 0; i < posts.length; i++) {
-            if(posts[i].data.clicked === false) {
-              //dict["" + posts[i].data.title] = "" + posts[i].data.selftext;
-              var $item = $("#post").clone();
-              $item.find("#title").text("" + count++ + ") " + posts[i].data.title);
-              if(posts[i].data.selftext_html !== null) {
-                $item.find("#text").text("" + posts[i].data.selftext.substring(0, 90) + "...");
-              }
-              $item.find("#link").attr("href", "" + posts[i].data.url);
-              $item.appendTo("#list");
-            }
-          }
-        }
-        chrome.browserAction.setBadgeText({text: "" + (count-1)});
+        handleSucess(data, jqXHR);
       }
     });
-    //setTimeout(checkForNewPosts, 1000);
+  }
+
+  function checkForNewPosts(){
+    if (RedditData.loggedIn) {
+      checkWithAuth();
+    } else {
+      checkWithNoAuth();
+    }
   }
 
   function sortingChanged() {
@@ -138,11 +179,36 @@ $(document).ready(function() {
     return true;
   }
 
+  var data;
+
+  function getToken(code, uri, client) {
+    var data = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + uri;
+
+    $.ajax({
+      url: URL,
+      type: 'POST',
+      data: data,
+      dataType: 'json',
+      beforeSend : function(xhr) {
+        xhr.setRequestHeader ("Authorization", "Basic " + btoa(client + ":" + ""));
+      },
+      success: function(data, textStatus, jqXHR) {
+        RedditData.loggedIn = true;
+        RedditData.token = data.access_token;
+        RedditData.refresh_token = data.refresh_token;
+        RedditData.expireDate = data.expires_in;
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        // TODO: catch for errors
+      }
+    });
+  }
+
   function authorize() {
     const baseURL = "https://www.reddit.com/api/v1/authorize"
     const clientID = "CAkDeHjpPz8ZWw";
     const type = "code";
-    const rURI = "https://efpldkoaoakkglfgdhhfbbhckchoeeaf.chromiumapp.org/reddit";
+    const rURI = "https://geaeacgampcjoddamdhmlmamimcknamn.chromiumapp.org/reddit";
     const duration = "permanent";
     const state = "1234";
     const scope = "identity,history";
@@ -152,24 +218,23 @@ $(document).ready(function() {
                 + "&scope=" + scope;
 
 
-    console.log("URL:" + URL);
     chrome.identity.launchWebAuthFlow(
       {'url': URL, 'interactive': true},
       function(redirect_url) {
-        console.log("RESPONSE: " + redirect_url);
         // Read this: https://github.com/reddit/reddit/wiki/OAuth2
 
-        // TODO retrieve code form redirect url, example below
-        // https://efpldkoaoakkglfgdhhfbbhckchoeeaf.chromiumapp.org/reddit?state=1234&code=-RfbB1Pu-74MESMezczJZ4d7jrg
-        // plus check if state matches the state variable on top
+        // TODO: check for errors
+        alert("redirect_url: " + redirect_url);
+        var code = redirect_url.substring(redirect_url.indexOf("code="));
 
-        // TODO make POST request tohttps://www.reddit.com/api/v1/access_token
-        // and data of : grant_type=authorization_code&code=CODE&redirect_uri=URI
+        alert("code: " + redirect_url);
+        getToken(code, rURI, clientID);
       });
   }
 
   //This is temporary for later when we will need to make the extension constantly run and do checks.
   checkForNewPosts();
+  authorize();
   $("#subredditList").on("click", ".font", function(e) {
     subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
     emptyList();
