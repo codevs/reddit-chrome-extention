@@ -167,7 +167,6 @@ $(document).ready(function() {
 
   function sortingChanged() {
     sorting = $("#sorting").val();
-    console.log("sorting: " + sorting);
   }
 
   function newTitle(s) {
@@ -224,17 +223,14 @@ $(document).ready(function() {
         // Read this: https://github.com/reddit/reddit/wiki/OAuth2
 
         // TODO: check for errors
-        alert("redirect_url: " + redirect_url);
         var code = redirect_url.substring(redirect_url.indexOf("code="));
 
-        alert("code: " + redirect_url);
         getToken(code, rURI, clientID);
       });
   }
 
   //This is temporary for later when we will need to make the extension constantly run and do checks.
   checkForNewPosts();
-  authorize();
   $("#subredditList").on("click", ".font", function(e) {
     subreddit = $(this).text().substring(base_url.indexOf("/r/" + 3));
     emptyList();
