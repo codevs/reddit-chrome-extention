@@ -4,6 +4,10 @@ A Chrome extension for seeing the number of unread posts on your favorite sub Re
 
 
 ## How to install ##
+
 1) Open Google Chrome extentions
+
 2) Drag reddit-chrome-extention.crx into extentions
+
 3) Profit
+
